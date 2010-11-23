@@ -18,5 +18,6 @@
 #import "UITableView+CellCreation.h"
 #import "UITableViewCell+Bindable.h"
 
+#import "OverlayView.h"
 #import "EmptyDataSource.h"
 #import "LoadingDataSource.h"
