@@ -10,9 +10,8 @@
 
 @implementation UITableView(CellCreation)
 
-- (UITableViewCell*) dequeueCellWithStyle:(UITableViewCellStyle)cellStyle
+- (UITableViewCell*) dequeueCell:(NSString*)cellId withStyle:(UITableViewCellStyle)cellStyle
 {
-    static NSString *cellId = @"UITableViewCell";
     UITableViewCell *cell = [self dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:cellStyle
@@ -23,7 +22,14 @@
 
 - (UITableViewCell*) dequeueCell
 {
-    return [self dequeueCellWithStyle:UITableViewCellStyleDefault];
+    return [self dequeueCell:@"UITableViewCell" withStyle:UITableViewCellStyleDefault];
+}
+
+- (UITableViewCell*) dequeueCellForView:(NSString*)bindableViewName withData:(NSDictionary*)data
+{
+    UITableViewCell* cell = [self dequeueCell:bindableViewName withStyle:UITableViewCellStyleDefault];
+    [cell bindModel:data usingViewNibNamed:bindableViewName];
+    return cell;
 }
 
 @end

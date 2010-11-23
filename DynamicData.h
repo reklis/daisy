@@ -16,6 +16,7 @@
 #import "UIApplication+ErrorDialog.h"
 #import "UITableViewController+Async.h"
 #import "UITableView+CellCreation.h"
+#import "UITableViewCell+Bindable.h"
 
 #import "EmptyDataSource.h"
 #import "LoadingDataSource.h"

@@ -11,6 +11,7 @@
 @interface UITableView(CellCreation)
 
 - (UITableViewCell*) dequeueCell;
-- (UITableViewCell*) dequeueCellWithStyle:(UITableViewCellStyle)cellStyle;
+- (UITableViewCell*) dequeueCell:(NSString*)cellId withStyle:(UITableViewCellStyle)cellStyle;
+- (UITableViewCell*) dequeueCellForView:(NSString*)bindableViewName withData:(NSDictionary*)data;
 
 @end

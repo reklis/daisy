@@ -8,20 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol Bindable <NSObject,NSCoding>
-
-- (void) bindModel:(NSDictionary*)m;
-
-@end
-
 @interface UITableViewController(DynamicDataSource)
 
 - (void) changeDataSource:(id<UITableViewDataSource>)newDataSource;
-
-@end
-
-@interface UITableViewController(CellPopulation)
-
-- (void) populateCell:(UITableViewCell*)cell withData:(NSDictionary*)data usingViewNibNamed:(NSString*)viewNib;
 
 @end

@@ -17,21 +17,3 @@
 }
 
 @end
-
-@implementation UITableViewController(CellPopulation)
-
-- (void) populateCell:(UITableViewCell*)cell withData:(NSDictionary*)data usingViewNibNamed:(NSString*)viewNib;
-{
-    UIView* cv = cell.contentView;
-    if (cv.subviews.count == 0) {
-        id<Bindable> v = [NSBundle loadNibView:viewNib];
-        [v bindModel:data];
-        [cv addSubview:v];
-    } else {
-        id<Bindable> v = [cv.subviews objectAtIndex:0];
-        [v bindModel:data];
-    }
-}
-
-@end
-
