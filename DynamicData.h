@@ -10,6 +10,7 @@
 #import "AsyncHttpRequest.h"
 #import "AsyncXmlHttpRequest.h"
 #import "AsyncCommand.h"
+#import "AsyncCommandResponse.h"
 #import "XmlHttpRequestCommand.h"
 
 #import "NSBundle+LoadNibView.h"
