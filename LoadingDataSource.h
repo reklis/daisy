@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface LoadingDataSource : NSObject <UITableViewDataSource> {
+@interface LoadingDataSource : NSObject <UITableViewDataSource,UITableViewDelegate> {
 
 }
 
