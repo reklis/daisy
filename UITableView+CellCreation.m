@@ -1,11 +1,3 @@
-//
-//  UITableView+CellCreation.m
-//  GoalFaceTouch
-//
-//  Created by Steven Fusco on 11/23/10.
-//  Copyright 2010 Cibo Technology, LLC. All rights reserved.
-//
-
 #import "UITableView+CellCreation.h"
 
 @implementation UITableView(CellCreation)
