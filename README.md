@@ -19,7 +19,11 @@ classes.
 To create your own commands you can inherit from **XmlHttpRequestCommand** or
 build your own using **AsyncXmlHttpRequest**
 
+<<<<<<< HEAD
 Any controller will do, UIViewController for single records,
+=======
+Any controller will do, **UIViewController** for single records,
+>>>>>>> b1f3d2ada155893c80edcc1c68d6f0fae538bc88
 UITableViewController for collections seems to work well.  You can use 
 **LoadingDataSource** and **EmptyDataSource** as transitional datasources.
 
