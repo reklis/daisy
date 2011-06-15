@@ -19,6 +19,7 @@ extern NSString* kAsyncHttpRequestFailureMessageUserDictionaryInfoKey;
     BOOL isDownloading;
     NSMutableURLRequest* urlRequest;
     NSURLConnection* urlConnection;
+    NSRunLoop* urlRunLoop;
 }
 
 // NSURLConnection

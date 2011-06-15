@@ -62,7 +62,9 @@
     _isLoading = YES;
     
     if ([delegate respondsToSelector:@selector(commandDidStart:)]) {
-        [delegate commandDidStart:self];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [delegate commandDidStart:self];
+        });
     }
 }
 
@@ -71,7 +73,9 @@
     [self resetState];
     
     if ([delegate respondsToSelector:@selector(commandDidCancelLoad:)]) {
-        [delegate commandDidCancelLoad:self];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [delegate commandDidCancelLoad:self];
+        });
     }
 }
 
@@ -80,7 +84,9 @@
     [self resetState];
     
     if ([delegate respondsToSelector:@selector(command:didFailLoadWithError:)]) {
-        [delegate command:self didFailLoadWithError:error];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [delegate command:self didFailLoadWithError:error];
+        });
     }
 }
 
@@ -91,7 +97,9 @@
     _timeLoaded = [[NSDate date] timeIntervalSinceReferenceDate];
 
     if ([delegate respondsToSelector:@selector(commandDidFinishLoad:)]) {
-        [delegate commandDidFinishLoad:self];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [delegate commandDidFinishLoad:self];
+        });
     }
 }
 

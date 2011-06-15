@@ -41,8 +41,16 @@
 
 - (void) request:(AsyncXmlHttpRequest*)request completedWithData:(NSDictionary*)data
 {
-    [self parseResult:data];
-    [super didFinishLoad];
+    @try {
+        NSLog(@"success: %@", data);
+        [self parseResult:data];
+    }
+    @catch (NSException * e) {
+        NSLog(@"%@",e);
+    }
+    @finally {
+        [super didFinishLoad];
+    }
 }
 
 - (void) request:(AsyncXmlHttpRequest*)request completedWithError:(NSError*) error

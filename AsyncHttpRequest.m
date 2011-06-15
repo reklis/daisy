@@ -21,12 +21,11 @@ NSString* kAsyncHttpRequestFailureMessageUserDictionaryInfoKey = @"kAsyncHttpReq
 + (NSOperationQueue*) sharedOperationQueue
 {
     static NSOperationQueue* asyncHttpQueue = nil;
-    @synchronized(asyncHttpQueue) {
-        if (nil == asyncHttpQueue) {
-            asyncHttpQueue = [[NSOperationQueue alloc] init];
-            [asyncHttpQueue setName:@"AsyncHttpRequest"];
-            [asyncHttpQueue setSuspended:NO];
-        }
+    if (nil == asyncHttpQueue) {
+        asyncHttpQueue = [[NSOperationQueue alloc] init];
+        [asyncHttpQueue setName:@"AsyncHttpRequest"];
+        [asyncHttpQueue setSuspended:NO];
+        [asyncHttpQueue setMaxConcurrentOperationCount:2];
     }
     return asyncHttpQueue;
 }
@@ -59,8 +58,11 @@ NSString* kAsyncHttpRequestFailureMessageUserDictionaryInfoKey = @"kAsyncHttpReq
                                   timeoutInterval:timeoutIntervalInSeconds];
         
 		urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest
-                                                        delegate:self];
-        
+                                                        delegate:self
+                                                startImmediately:NO];
+        urlRunLoop = [NSRunLoop currentRunLoop];
+        [urlConnection scheduleInRunLoop:urlRunLoop forMode:NSDefaultRunLoopMode];
+
         isDownloading = YES;
 		
         if (urlConnection) {
@@ -97,7 +99,8 @@ NSString* kAsyncHttpRequestFailureMessageUserDictionaryInfoKey = @"kAsyncHttpReq
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    [connection release];
+    [urlConnection unscheduleFromRunLoop:urlRunLoop forMode:NSDefaultRunLoopMode];
+    [urlConnection release];
 	
 	[self completeWithError:error];
 }
@@ -105,8 +108,8 @@ NSString* kAsyncHttpRequestFailureMessageUserDictionaryInfoKey = @"kAsyncHttpReq
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     NSLog(@"%@: Succeeded! Received %d bytes of data", self, [self.downloadedData length]);
-	
-    [connection release];
+    [urlConnection unscheduleFromRunLoop:urlRunLoop forMode:NSDefaultRunLoopMode];
+    [urlConnection release];
     
     isDownloading = NO;
     [self finishedDownloading];
@@ -129,6 +132,8 @@ NSString* kAsyncHttpRequestFailureMessageUserDictionaryInfoKey = @"kAsyncHttpReq
 {
     if ([challenge previousFailureCount] == 0) {
         NSURLCredential *newCredential;
+        NSAssert(self.username != nil, @"no username for credentials challenge");
+        NSAssert(self.password != nil, @"no password for credentials challenge");
         newCredential=[NSURLCredential credentialWithUser:self.username
                                                  password:self.password
                                               persistence:NSURLCredentialPersistencePermanent];
@@ -172,6 +177,7 @@ NSString* kAsyncHttpRequestFailureMessageUserDictionaryInfoKey = @"kAsyncHttpReq
 
 - (void) completeWithError:(NSError*)error
 {
+    NSLog(@"%@ %@", self, error);
     isDownloading = NO;
 }
 
@@ -185,27 +191,36 @@ NSString* kAsyncHttpRequestFailureMessageUserDictionaryInfoKey = @"kAsyncHttpReq
 
 - (void) start
 {
-    NSLog(@"%@ %@", self, urlConnection);
+    NSAssert(urlConnection != nil, @"no url connection for command execution");
+    NSLog(@"Start: %@ %@, finished: %@", self, urlConnection, ([self isFinished]) ? @"true":@"false");
     [urlConnection start];
 }
 
 - (void) cancel
 {
-    NSLog(@"%@ Cancelled", self);
+    NSLog(@"Cancel: %@ %@", self, urlConnection);
     
     [urlConnection cancel];
     isDownloading = NO;
+    //[urlConnection unscheduleFromRunLoop:urlRunLoop forMode:NSDefaultRunLoopMode];
     
     [self completeWithError:[NSError errorWithMessage:@"Operation Aborted"]];
 }
 
+- (BOOL)isReady
+{
+    return YES;
+}
+
 - (BOOL)isExecuting
 {
+    NSLog(@"isExecuting: %@", (isDownloading) ? @"true" : @"false");
     return isDownloading;
 }
 
 - (BOOL)isFinished
 {
+    NSLog(@"isFinished: %@", (isDownloading == NO) ? @"true" : @"false");
     return (isDownloading == NO);
 }
 

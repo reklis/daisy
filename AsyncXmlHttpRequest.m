@@ -5,18 +5,26 @@
 + (AsyncXmlHttpRequest*) queueRequest:(NSString*)urlString
                            withDelegate:(id<AsyncXmlHttpRequestDelegate>)delegate
 {
-    AsyncXmlHttpRequest* req = [[AsyncXmlHttpRequest alloc] initWithURLString:urlString
-                                                                         username:nil
-                                                                         password:nil
-                                                                          timeout:30
-                                                                      cachePolicy:NSURLRequestReturnCacheDataElseLoad];;
-    [req setDelegate:delegate];
+//    AsyncXmlHttpRequest* req = [[AsyncXmlHttpRequest alloc] initWithURLString:urlString
+//                                                                         username:nil
+//                                                                         password:nil
+//                                                                          timeout:30
+//                                                                      cachePolicy:NSURLRequestReturnCacheDataElseLoad];;
+//    [req setDelegate:delegate];
+//    
+//    NSOperationQueue* q = [AsyncXmlHttpRequest sharedOperationQueue];
+//    [q addOperation:req];
+//    [req release];
+//    
+//    return req;
     
+    AsyncXmlHttpRequest* req = [[[AsyncXmlHttpRequest alloc] init] autorelease];
+    req.delegate = delegate;
     NSOperationQueue* q = [AsyncXmlHttpRequest sharedOperationQueue];
-    [q addOperation:req];
-    
-    [req release];
-    
+    [q addOperationWithBlock:^(void) {
+        NSLog(@"%@ %@", req, urlString);
+        [req beginXmlParsing:urlString];
+    }];
     return req;
 }
 
@@ -28,12 +36,14 @@
 
 - (BOOL)isExecuting
 {
+    NSLog(@"isExecuting: %@", ([super isExecuting] || isParsing) ? @"true" : @"false");
     return ([super isExecuting] || isParsing);
 }
 
 - (BOOL)isFinished
 {
-    return (([super isExecuting] == NO) && (isParsing == NO));
+    NSLog(@"isFinished: %@", (([self isExecuting] == NO) && (isParsing == NO)) ? @"true" : @"false");
+    return (([self isExecuting] == NO) && (isParsing == NO));
 }
 
 - (void) cancel
@@ -44,21 +54,27 @@
     [super cancel];
 }
 
-- (void) finishedDownloading
-{
-    [self beginXmlParsing];
-}
+//- (void) finishedDownloading
+//{
+//    [self beginXmlParsing];
+//}
 
-- (void) beginXmlParsing
+- (void) beginXmlParsing:(NSString*)urlString
 {
-    xmlParser = [[NSXMLParser alloc] initWithData:self.downloadedData];
-    [xmlParser setDelegate:self];
-    [xmlParser setShouldProcessNamespaces:NO];
-    [xmlParser setShouldReportNamespacePrefixes:NO];
-    [xmlParser setShouldResolveExternalEntities:NO];
-    
-    isParsing = YES;
-    [xmlParser parse];
+    //xmlParser = [[NSXMLParser alloc] initWithData:self.downloadedData];
+    @try {
+        xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:[NSURL URLWithString:urlString]];
+        [xmlParser setDelegate:self];
+        [xmlParser setShouldProcessNamespaces:NO];
+        [xmlParser setShouldReportNamespacePrefixes:NO];
+        [xmlParser setShouldResolveExternalEntities:NO];
+        
+        isParsing = YES;
+        [xmlParser parse];
+    }
+    @catch (NSException *exception) {
+        [self completeWithError:[NSError errorWithMessage:[exception reason]]];
+    }
 }
 
 // sent when the parser begins parsing of the document.

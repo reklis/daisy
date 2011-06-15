@@ -23,9 +23,8 @@
 @property (readonly) BOOL isParsing;
 @property (readwrite,nonatomic,assign) id<AsyncXmlHttpRequestDelegate> delegate; // weak reference
 
-// Private
 
-- (void) beginXmlParsing;
+- (void) beginXmlParsing:(NSString*)urlString;
 - (void) completeWithSuccess:(NSDictionary*)dictionary;
 
 @end
