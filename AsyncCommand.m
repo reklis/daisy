@@ -103,5 +103,21 @@
     }
 }
 
++ (NSString*) currentDateString
+{
+    NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSString* s = [dateFormatter stringFromDate:[NSDate date]];
+    return s;
+}
+
++ (NSString*) currentTimezoneString
+{
+    NSInteger tz = [[NSTimeZone systemTimeZone] secondsFromGMT];
+    float tz_h = (float)tz/60./60.;
+    float tz_m = fmodf((float)tz/60., 60);
+    NSString* s = [NSString stringWithFormat:@"%.2d:%.2d", (int)tz_h, (int)tz_m];
+    return s;
+}
 
 @end

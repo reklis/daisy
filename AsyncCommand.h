@@ -38,6 +38,10 @@
 - (void) didFailLoadWithError:(NSError*)error;
 - (void) didFinishLoad;
 
+// system date and timezone
++ (NSString*) currentDateString;
++ (NSString*) currentTimezoneString;
+
 @end
 
 
