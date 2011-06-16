@@ -3,6 +3,14 @@
 
 @implementation XmlHttpRequestCommand
 
+- (void)dealloc {
+    if (_req) {
+        [_req release];
+        _req = nil;
+    }
+    [super dealloc];
+}
+
 - (NSString*) resourceURL
 {
     return [AsyncXmlHttpRequest urlFromBase:[self baseURL] withOptions:self.parameters];
@@ -13,8 +21,8 @@
     if (!self.isLoading) {
         NSString* u = [self resourceURL];
         if (nil != u) {
-            _req = [AsyncXmlHttpRequest queueRequest:self.resourceURL
-                                          withDelegate:self];
+            _req = [[AsyncXmlHttpRequest queueRequest:self.resourceURL
+                                          withDelegate:self] retain];
             
             [super didStartLoad];
         }
@@ -32,6 +40,8 @@
 {
     if (_req) {
         [self cancel];
+        [_req release];
+        _req = nil;
     }
     
     [super invalidate];
@@ -44,18 +54,30 @@
     @try {
         NSLog(@"success: %@", data);
         [self parseResult:data];
+        
+        [super didFinishLoad];
     }
-    @catch (NSException * e) {
-        NSLog(@"%@",e);
+    @catch (NSException * ex) {
+        NSLog(@"%@",ex);
     }
     @finally {
-        [super didFinishLoad];
+        [_req release];
+        _req = nil;
     }
 }
 
 - (void) request:(AsyncXmlHttpRequest*)request completedWithError:(NSError*) error
 {
-    [super didFailLoadWithError:error];
+    @try {
+        [super didFailLoadWithError:error];
+    }
+    @catch (NSException *ex) {
+        NSLog(@"%@",ex);
+    }
+    @finally {
+        [_req release];
+        _req = nil;
+    }
 }
 
 #pragma mark Child Override Points
