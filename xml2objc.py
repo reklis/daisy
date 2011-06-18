@@ -120,6 +120,7 @@ multi_command_m_template = """
 // {auto_gen_comment}
 
 #import "{command_class_name}.h"
+#import "NSObject+NSArray.h"
 
 @implementation {command_class_name}
 
@@ -143,7 +144,7 @@ multi_command_m_template = """
 
 - (void) parseResult:(id)result
 {{
-    NSArray* resultArray = [[result objectForKey:@"{parent_element_name}"] objectForKey:@"{child_element_name}"];
+    NSArray* resultArray = [[[result objectForKey:@"{parent_element_name}"] objectForKey:@"{child_element_name}"] toArray];
     NSMutableArray* parsedResult = [NSMutableArray arrayWithCapacity:[resultArray count]];
     for (NSDictionary* r in resultArray) {{
         [parsedResult addObject:[r objectForKey:@"attributes"]];
