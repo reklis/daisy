@@ -7,6 +7,6 @@
 
 + (id) resultFromData:(NSDictionary*)data;
 
-@property (readwrite,nonatomic,assign) NSDictionary* responseData;
+@property (readwrite,nonatomic,retain) NSDictionary* responseData;
 
 @end

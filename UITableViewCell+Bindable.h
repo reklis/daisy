@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 
-@protocol Bindable <NSObject,NSCoding,UIAppearance, UIAppearanceContainer>
+@protocol Bindable <NSObject,NSCoding>
 
 - (void) bindModel:(NSDictionary*)m;
 

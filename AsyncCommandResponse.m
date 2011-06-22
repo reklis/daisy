@@ -12,4 +12,9 @@
     return r;
 }
 
+- (void)dealloc {
+    [responseData release];
+    [super dealloc];
+}
+
 @end
