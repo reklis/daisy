@@ -14,6 +14,8 @@
 
 - (NSString*) baseURL;
 - (NSDictionary*) parameters;
+
+- (void) parseResultTotal:(NSDictionary*) data;
 - (void) parseResult:(NSDictionary*) data;
 
 @end

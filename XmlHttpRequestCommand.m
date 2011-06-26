@@ -53,6 +53,7 @@
 {
     @try {
         NSLog(@"success: %@", data);
+        [self parseResultTotal:data];
         [self parseResult:data];
         
         [super didFinishLoad];
@@ -90,6 +91,10 @@
 - (NSDictionary*) parameters
 {
     return nil;
+}
+
+- (void) parseResultTotal:(NSDictionary*) data
+{
 }
 
 - (void) parseResult:(NSDictionary*) data
