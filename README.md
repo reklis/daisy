@@ -26,3 +26,8 @@ Any controller will do, **UIViewController** for single records,
 A number of Categories are provided to reduce code in UITableViewControllers,
 this way you don't have to inherit from some custom base class and you can
 continue to use your own model uninterrupted.
+
+
+---
+
+[![gittip](http://img.shields.io/gittip/reklis.svg)](https://www.gittip.com/reklis/)
